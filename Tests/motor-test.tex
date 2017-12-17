@@ -1,0 +1,91 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+
+
+\begin{document}
+{\centering
+\LARGE
+\title .DC Motor Starting Current Test
+\small
+\vspace{0.5 cm}
+\par by Göksenin Hande Bayazıt \& Taha Doğan
+\vspace{0.5 cm}
+\par Dec. 17, 2017
+\par
+\vspace{1 cm}
+}
+\section{Test Conditions}
+\begin{itemize}
+\item Location: Design Studio
+\item Date: Dec. 17, 2017
+\item Ambient Temperature: Room temperature (appx. 23-25$^{\circ}$C)
+\item Environment: Loud, luminous
+\end{itemize}
+
+\section{Test Procedure}
+
+\par 
+\hspace{0.5 cm} The aim of this test is to measure the starting current of the DC motor. To achieve this, a microcontroller is programmed as a digital voltmeter (in the scope of EE447 laboratory). With such a setup, the voltage drop on a resistor connected in series to the terminals of the motor can be measured and recorded, which provides the information of armature current of the motor. 
+\par However, as the resistance value of the measurement resistor is not negligible compared to the internal resistance of the motor, it causes a significant change in the starting current. For that reason, internal resistance of the DC motor should be determined with full-load test in order to be able to make necessary calculations. (In full-load test, starting current of the DC motor is measured when the shaft speed, hence the back EMF is 0. Therefore, having the terminal voltage and armature current informations, we are able to determine the value of internal resistance.)
+
+\section{Test Results}
+\subsection{Full-Load Test}
+\subsubsection{Specifications:}
+\begin{itemize}
+\item Battery Voltage Before Measurement: 8.1 V
+\item Battery Voltage After Measurement: 8 V
+\item $\omega$ = 0 rad/s, $E_{b}$ = 0 V
+\end{itemize}
+\subsubsection{Measurement Results:}
+\begin{enumerate}
+\item $I_{a}$ = 0.60 A
+\item $I_{a}$ = 0.58 A
+\item $I_{a}$ = 0.55 A
+\item $I_{a}$ = 0.56 A
+\item $I_{a}$ = 0.61 A
+\item $I_{a}$ = 0.55 A
+\item $I_{a}$ = 0.55 A
+\item $I_{a}$ = 0.56 A
+\item $I_{a}$ = 0.54 A
+\item $I_{a}$ = 0.55 A
+\end{enumerate}
+Mean: $I_{a}$ = 0.57 A
+\vspace{0.5 cm}
+
+$Z_{in} = \frac{V_t - E_b}{I_a} = \frac{8}{0.57} = 14.2 \Omega$
+
+\subsection{Starting Current}
+\subsubsection{Specifications:}
+\begin{itemize}
+\item Measurement Resistor: 10 $\Omega$
+\item Battery Voltage: 8 V
+\item Mechanical Load: Tyre moving on low-friction-surface
+\end{itemize}
+\subsubsection{Measurement Results:}
+\begin{enumerate}
+\item $I_{a}$ = 0.067 A
+\item $I_{a}$ = 0.064 A
+\item $I_{a}$ = 0.065 A
+\item $I_{a}$ = 0.066 A
+\item $I_{a}$ = 0.062 A
+\item $I_{a}$ = 0.065 A
+\item $I_{a}$ = 0.067 A
+\item $I_{a}$ = 0.065 A
+\item $I_{a}$ = 0.065 A
+\item $I_{a}$ = 0.064 A
+\end{enumerate}
+Mean: $I_{a}$ = 0.065 A
+\vspace{0.5 cm}
+
+Approximate Calculated Starting Current:
+$I = \frac{(14.2+10*0.065)}{14.2} = 0.111 A$
+\vspace{0.5 cm}
+\par Starting Current Measured with Multimeter: 0.13 A
+
+\section{Conclusion}
+\hspace{0.5 cm}
+These tests are performed in order to observe and measure the current rating of the motors at worst case (i.e. at start and at full-load). Considering the test results, it can be concluded that the amount current drawn by motors is far from being harmful for the battery, the motor drive and the rest of the system.
+\end{document}
