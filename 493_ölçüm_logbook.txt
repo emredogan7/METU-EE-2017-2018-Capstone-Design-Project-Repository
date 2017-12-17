@@ -1,0 +1,41 @@
+Motor Tests
+
+-----------------------------------------------------
+1 - Motor Internal Parameters
+Battery Voltage: 8.1V
+Back EMF: 0 at zero speed
+At zero speed, under 8.1V
+	test_1: I = 0.60 A
+	test_2: I = 0.58 A
+	test_3: I = 0.55 A
+	test_4: I = 0.56 A
+	test_5: I = 0.61 A
+	test_6: I = 0.55 A
+	test_7: I = 0.55 A
+	test_8: I = 0.56 A
+	test_9: I = 0.54 A
+	test_10: I = 0.55 A
+
+After measurement, Battery Voltage: 8.0
+-----------------------------------------------------
+
+2 - Starting Current, Mechanical Load is Wheel
+10 Ohms Connected Series to the Motor
+Voltage on 10 Ohms is measured
+
+Note that, internal resistance is found with "full load test" as
+16 Ohms.
+
+Battery Voltage: 8.0V
+Under wheel load, (normal case)
+	test_1: I = 0.067 A
+	test_2: I = 0.064 A
+	test_3: I = 0.065 A
+	test_4: I = 0.066 A
+	test_5: I = 0.062 A
+	test_6: I = 0.065 A
+	test_7: I = 0.067 A
+	test_8: I = 0.065 A
+	test_9: I = 0.065 A
+	test_10: I = 0.064 A
+-----------------------------------------------------
