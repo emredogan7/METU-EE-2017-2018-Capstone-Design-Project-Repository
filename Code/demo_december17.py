@@ -8,8 +8,8 @@ GPIO.cleanup()
 
 FwdL=26
 BwdL=20
-FwdR=19
-BwdR=16
+BwdR=19
+FwdR=16
 sleeptime=1
 
 GPIO.setmode(GPIO.BCM)
@@ -20,35 +20,45 @@ GPIO.setup(BwdR, GPIO.OUT)
 
 def forward(x):
     GPIO.output(FwdL, GPIO.HIGH)
-    GPIO.output(FwdR, GPIO.LOW)
+    GPIO.output(FwdR, GPIO.HIGH)
     print("Moving Forward")
     time.sleep(x)
     GPIO.output(FwdL, GPIO.LOW)
-    GPIO.output(FwdR, GPIO.HIGH)
+    GPIO.output(FwdR, GPIO.LOW)
 
-def backward(x):
+def reverse(x):
     GPIO.output(BwdL, GPIO.HIGH)
-    GPIO.output(BwdR, GPIO.LOW)
+    GPIO.output(BwdR, GPIO.HIGH)
     print("Moving Backward")
     time.sleep(x)
     GPIO.output(BwdL, GPIO.LOW)
-    GPIO.output(BwdR, GPIO.HIGH)
-
+    GPIO.output(BwdR, GPIO.LOW)
+    
 def turnleft(x):
     GPIO.output(FwdL, GPIO.HIGH)
-    GPIO.output(FwdR, GPIO.HIGH)
+    GPIO.output(BwdR, GPIO.HIGH)
     print("Gemi Sola Çekiyor Kuna")
     time.sleep(x)
     GPIO.output(FwdL, GPIO.LOW)
-    GPIO.output(FwdR, GPIO.LOW)
+    GPIO.output(BwdR, GPIO.LOW)
 
 def turnright(x):
     GPIO.output(BwdL, GPIO.HIGH)
-    GPIO.output(BwdR, GPIO.HIGH)
+    GPIO.output(FwdR, GPIO.HIGH)
     print("Gemi Sağa Çekiyor Kuna")
     time.sleep(x)
     GPIO.output(BwdL, GPIO.LOW)
+    GPIO.output(FwdR, GPIO.LOW)
+
+def stop(x):
+    GPIO.output(FwdL, GPIO.LOW)
+    GPIO.output(FwdR, GPIO.LOW)
+    GPIO.output(BwdL, GPIO.LOW)
     GPIO.output(BwdR, GPIO.LOW)
+    
+    print("Halt")
+    time.sleep(x)
+
     
 
 #Sensor part
@@ -96,11 +106,8 @@ while (1):
     if frw_s():
         forward(1)
     else:
-        backward(1)
+        stop(5)
+        turnright(0.5)
+        stop(2)
     
-    #reverse(1)
-    
-   ## turnleft(1)
-
-    #turnright(1)
 GPIO.cleanup()                                                                                    
