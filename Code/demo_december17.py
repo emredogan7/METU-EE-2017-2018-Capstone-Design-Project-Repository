@@ -26,14 +26,14 @@ def forward(x):
     GPIO.output(FwdL, GPIO.LOW)
     GPIO.output(FwdR, GPIO.LOW)
 
-def reverse(x):
+def backward(x):
     GPIO.output(BwdL, GPIO.HIGH)
     GPIO.output(BwdR, GPIO.HIGH)
     print("Moving Backward")
     time.sleep(x)
     GPIO.output(BwdL, GPIO.LOW)
     GPIO.output(BwdR, GPIO.LOW)
-    
+
 def turnleft(x):
     GPIO.output(FwdL, GPIO.HIGH)
     GPIO.output(BwdR, GPIO.HIGH)
@@ -55,14 +55,14 @@ def stop(x):
     GPIO.output(FwdR, GPIO.LOW)
     GPIO.output(BwdL, GPIO.LOW)
     GPIO.output(BwdR, GPIO.LOW)
-    
+
     print("Halt")
     time.sleep(x)
 
-    
+
 
 #Sensor part
-def frw_s(): 
+def frw_s():
     TRIG = 23
     ECHO = 24
 
@@ -102,12 +102,12 @@ def frw_s():
 
 
 while (1):
-    
+
     if frw_s():
         forward(1)
     else:
         stop(5)
         turnright(0.5)
         stop(2)
-    
-GPIO.cleanup()                                                                                    
+
+GPIO.cleanup()
