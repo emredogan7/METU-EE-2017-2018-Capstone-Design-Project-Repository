@@ -1,0 +1,9 @@
+Solution Approach
+	1-Subsystems
+		a.Movement
+			i.DC Motor
+			ii.Wheels
+		b.Sensors
+		c.Decision and Control
+	2-Solution Approach and Solution Identifications
+	
