@@ -8,6 +8,13 @@ class Map:
 
     def __init__(self):
         print "Robot started to move! \n"
+        
+    def Clear(self):
+        print "Map is cleared! \n"
+        Map.Map_Array = []      
+        Map.Last = 0
+        Map.Index = 0           
+        Map.Direction = 1 
 
     def Turn_Right(self) :
         print "Robot is turning right! \n"
@@ -138,4 +145,6 @@ robot.printo()
 robot.Autonomous()
 robot.printo()
 robot.Autonomous()
+robot.printo()
+robot.Clear()
 robot.printo()
