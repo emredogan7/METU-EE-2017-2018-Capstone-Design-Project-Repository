@@ -229,22 +229,6 @@ class Angle:
 Plank = Angle()
 cap = cv2.VideoCapture(0)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 while(True):
     beginning = datetime.datetime.now().time().microsecond + datetime.datetime.now().time().second * 1000000
     Plank.measurement(cap)
