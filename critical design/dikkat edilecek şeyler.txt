@@ -1,0 +1,51 @@
+-	Detailed Description of the overall system
+	o	System and subsystem level block diagrams
+	o	Flow charts
+	o	Technical drawings (3D)
+	o	Control and data signals
+-	Conceptual design raporundan farklý neler yapýldý, comment briefly.
+-	TOP-DOWN approach ile DETAILED technical specifications
+-	Discussion on compatability between subsystems and their signal interfaces considering overall design.
+-	Justification: mühendislik ve müþteri isteklerini karþýladýðýndan bahset.
+-	Cost breakdown and analysis: neyi neden seçtik bahset.
+-	Up-to-date gantt chart.
+-	Power distribution diagram
+-	Power management analysis
+-	Test results encountered problems and implemented proposed solution
+-	Discussion of robustness of the design
+-	NO Software code must be provided.
+
+
+Dikkat edilecek konular
+1-	Overall system desctiption: 
+	a.	Top-down olmalý
+	b.	System ve subsystem diagramlarý olmalý
+	c.	Flow chart 
+	d.	3d çizim
+	e.	Control ve data sinyalleri görselleþtirme, eðer feedback yollarý varsa bahset
+	f.	Bütün blocklar ve sinyaller labellanmalý
+2-	Technical specifications
+	a.	Detaylý bir þekilde anlatýlmalý
+3-	Desing modifications
+	a.	Hiç bir deðiþiklik olmamalý 
+	b.	Ya da tam açýklamalaryla neden deðiþiklik yapýldýðý detaylýca anlatýlmalý
+4-	Compatability analysis
+	a.	Compatability: uyumluluk demek.
+	b.	Subsystemler arasýndakii uyumluluktan bahset
+5-	Compliance with requirements
+	a.	Design requirements are clearly defined.
+	b.	Kararlar nasýl alýndý bunlarý (a) maddesiyle iliþkilendirerek yaz
+	c.	Trade-off lardan bahset
+	d.	Birbiriyle çakýþan gereklilikler var mý, bahset.
+	e.	Test resultlarý ile bu requirementlarý ispatla
+	f.	Robustness?
+6-	Test procedures and assessment of test results
+	a.	Bütün subsystemlerle ilgili test planýn bekleniyor
+	b.	Bunlarý yaparken ne zorluklar oldu
+	c.	Testler baþarýlý olmalý
+7-	Resource management
+	a.	Bütçe incelemesi
+	b.	Power distribution diagramý lazým
+	c.	Güncel Gantt chart gerekiyor
+8-	Format, spelling, punctuation and of course Grammer
+	a.	Biliyon lan iþte.
