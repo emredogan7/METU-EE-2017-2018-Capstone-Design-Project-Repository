@@ -31,7 +31,7 @@ Dikkat edilecek konular
 	b.	Ya da tam açýklamalaryla neden deðiþiklik yapýldýðý detaylýca anlatýlmalý
 4-	Compatability analysis
 	a.	Compatability: uyumluluk demek.
-	b.	Subsystemler arasýndakii uyumluluktan bahset
+	b.	Subsystemler arasýndaki uyumluluktan bahset
 5-	Compliance with requirements
 	a.	Design requirements are clearly defined.
 	b.	Kararlar nasýl alýndý bunlarý (a) maddesiyle iliþkilendirerek yaz
