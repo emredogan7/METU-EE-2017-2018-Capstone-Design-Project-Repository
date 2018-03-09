@@ -1,0 +1,4 @@
+sudo apt-get install xtightvncviewer
+vncviewer 192.168.1.41:<buraya display number yaz>  (aşağıdaki gibi olcak)
+vncviewer 192.168.1.41:1
+sonra şifre: burak350
