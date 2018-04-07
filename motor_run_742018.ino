@@ -1,5 +1,5 @@
-#define enA 10
-#define enB 11
+#define enA A0
+#define enB A1
 #define in1 2
 #define in2 3
 #define in3 4
