@@ -1,7 +1,7 @@
 #define vccl A5
 #define gndl A4
-#define encal A3
-#define encbl A2
+#define encal A2
+#define encbl A3
 #define vccr 7
 #define gndr 9
 #define encar 6
