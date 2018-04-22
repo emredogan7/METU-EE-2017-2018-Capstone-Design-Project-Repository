@@ -18,12 +18,31 @@ class Slave():
     Zero_history = []
     Angle        = -9999999
     Direction    = ''
+    Angle_cam    = None
+    Robot_cam    = None
 
     def __init__(self, arg):
         Slave.Stop_history.extend( [ 'Slave', 'Slave' ] )
-        Slave.Zero_history.extend( [ 0, 0, 0 ] )
+        Slave.Zero_history.extend( [ 0, 0 ] )
         Slave.Direction    = 'Forward'
+        os.system("sudo ln -s /dev/v4l/by-path/pci-0000\:00\:14.0-usb-0\:11* /dev/cam1 ")#symlink - modify that part
+        os.system("sudo ln -s /dev/v4l/by-path/pci-0000\:00\:14.0-usb-0\:12* /dev/cam2 ")#symlink - modify that part
 
+        Slave.Angle_cam    = cv2.VideoCapture("/dev/cam1")
+        while True:
+            print "Angle_cam is being adjusted"
+            if (Slave.Angle_cam.isOpened()) :  # check if we succeeded
+                Slave.Angle_cam.set(cv2.CAP_PROP_FRAME_WIDTH,640)
+                Slave.Angle_cam.set(cv2.CAP_PROP_FRAME_HEIGHT,480)
+                break
+
+        Slave.Robot_cam    = cv2.VideoCapture("/dev/cam2")
+        while True:
+            print "Robot_cam is being adjusted"
+            if (Slave.Robot_cam.isOpened()) :  # check if we succeeded
+                Slave.Robot_cam.set(cv2.CAP_PROP_FRAME_WIDTH,640)
+                Slave.Robot_cam.set(cv2.CAP_PROP_FRAME_HEIGHT,480)
+                break
 
     """---------------- STOP_HISTORY -----------------"""
 
@@ -38,53 +57,61 @@ class Slave():
 
     """------------------ DIRECTION ------------------"""
 
-    def change_direction( self ):
-        if ( Slave.Direction == 'Backward' ):
-            Slave.Direction   = 'Forward'
-
+    def positive_angle_change( self, diff):
+        if diff > 0 :
+            Slave.Direction = 'Backward'
         else:
-            Slave.Direction   = 'Backward'
+            Slave.Direction = 'Forward'
 
-    def same_direction( self ):
-        pass
+    def negative_angle_change( self, diff):
+                if diff > 0 :
+                    Slave.Direction = 'Forward'
+                else:
+                    Slave.Direction = 'Backward'
 
-    def detect_direction( self, type_of_stop, Angle ):
+    def detect_direction( self ):
+        ret, frame_1 = Slave.Angle_cam.read()
+        self.angle( frame_1 )
+        Angle_1 = Slave.Angle
+
+        wait() #az bekle
+
+        ret, frame_2 = Slave.Angle_cam.read()
+        self.angle( frame_2 )
+        Angle_2 = Slave.Angle
+
         if ( Is_sys_stop ):
-            if ( Angle == 0 ):
-                change_direction()
-                return
-            else:
-                same_direction()
-                return
+            Slave.Direction   = 'Forward'
+            return
 
         elif ( Slave.Direction == 'Backward' ):
-            change_direction()
+            Slave.Direction   = 'Forward'
             return
 
         else:
-            if ( Angle == 0 ):
-                same_direction()
+            if ( Angle_1 == 0 ):
+                Slave.Direction   = 'Forward'
                 return
             else:
                 if ( Slave.Zero_history[1] == 'Master' ):
                     if ( Slave.Zero_history[0] == 'Slave' ):
-                        positive_angle_change()
+                        positive_angle_change( abs( Angle_2 ) - abs( Angle_1 ) )
                     if ( Slave.Zero_history[0] == 'Master' ):
-                        negative_angle_change()
+                        negative_angle_change( abs( Angle_2 ) - abs( Angle_1 ) )
                 elif ( Slave.Zero_history[1] == 'Slave' or Slave.Zero_history[1] == 'Sys' ):
                     if ( abs( Angle ) > 90 ):
-                        same_direction()
+                        Slave.Direction   = 'Forward'
                         return
                     else:
                         if ( Slave.Zero_history[0] == 'Master' ):
-                            same_direction()
+                            Slave.Direction   = 'Forward'
                             return
                         else:
                             if   ( Slave.Zero_history[0] == 'Slave' and Slave.Zero_history[1] == 'Sys'   ):
-                                same_direction()
+                                Slave.Direction   = 'Forward'
                                 return
                             elif ( Slave.Zero_history[0] == 'Slave' and Slave.Zero_history[1] == 'Slave' ):
-                                change_direction()
+                                Slave.Direction   = 'Backward'
                                 return
 
     """--------------- DIRECTION - END ---------------"""
@@ -282,10 +309,10 @@ class Slave():
         Plank_and_wall.arr.append( distance )
         Plank_and_wall.arr.pop( 0 )
 
-    def is_zero_stop( self , image ):
-        self.add_zero_dist( self.measure_wall_position( image ), self.measure_plank_position( image ) )
-        if ( ( Slave.Zero_history[0] == Slave.Zero_history[1] ) and ( Slave.Zero_history[0] == Slave.Zero_history[2] ) and Slave.Zero_history[0] != 0 ):
-            Slave.Zero_history = [ 0, 0, 0 ]
+    def is_zero_stop( self , image_1, image_2 ):
+        self.add_zero_dist( self.measure_wall_position( image_1 ), self.measure_plank_position( image_1 ) )
+        self.add_zero_dist( self.measure_wall_position( image_2 ), self.measure_plank_position( image_2 ) )
+        if ( Slave.Zero_history[0] == Slave.Zero_history[1] ):
             return True
         else:
             return False
@@ -298,25 +325,27 @@ class Slave():
             Slave.Is_sys_stop  = False
 
     def is_stop( self ):
-        """self.angle( frame )"""
-        Sys_condition = bool( ( Slave.Direction == 'Backward' and Slave.Angle == 0 ) or ( abs ( Slave.Angle ) == 90 ) )
+        ret, frame_1 = Slave.Angle_cam.read()
+        self.angle( frame_1 )
+        Angle_1 = Slave.Angle
+
+        wait() #az bekle
+
+        ret, frame_2 = Slave.Angle_cam.read()
+        self.angle( frame_2 )
+        Angle_2 = Slave.Angle
+
+        Sys_condition = bool( ( Slave.Direction == 'Backward' and Angle_1 == 0 ) or ( abs ( Angle_1 ) == 90 ) )
         if ( Sys_condition ):
             Is_sys_stop  = True
             return True
         else:
-            if ( Slave.Angle == 0 ):
-                if measure_wall_position( frame ) is None: #wall_position_slave
+            if ( Angle_1 == 0 ):
+                if self.measure_wall_position( frame_1 ) is None: #wall_position_slave
                     return False
                 else:
-                    return is_zero_stop( frame )
+                    return self.is_zero_stop( frame_1, frame_2 )
             else:
-                Angle_1 = Slave.Angle
-                """
-                motor_speed = 0
-                wait
-                frame = camera_again
-                self.angle( frame )"""
-                Angle_2 = Slave.Angle
                 if ( Angle_1 == Angle_2 ):
                     return True
                 else:
@@ -329,15 +358,29 @@ if __name__ == "__main__":
     while True:
         if obstacle():
             Turn_90()
-            Wait()
+            Wait() #10sn
+            Go_straight()
             Robot.history_add_stop( 'Slave' )
         elif Robot.is_stop():
+            Wait() #10 sn tamamla
             Robot.detect_direction()
-            Wait()
             if Robot.Is_sys_stop:
                 Robot.history_add_stop( 'Sys' )
                 Robot.sys_clear()
             else:
                 Robot.history_add_stop( 'Master' )
-        Bang_bang()
-        Wait()
+            Bang_bang()
+            Wait()
+            
+""" Eksikler
+
+1- detect_direction -> wait()
+2- is_stop          -> wait()
+3- __init__         -> usb yerleri
+4- obstacle
+5- Turn_90          -> ayrıca angle bilgisi gerekiyo 90 derece dönmek için
+6- wait fonksiyonları
+7- Bang_bang
+9- Go_straight()
+10- serial ile düzgün synch olmalı bu fonk lar
+"""
