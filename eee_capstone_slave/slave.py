@@ -7,8 +7,13 @@ from math import atan2,degrees,sqrt
 import os
 import datetime,time
 from numpy import zeros, newaxis
+import time
+import RPi.GPIO as GPIO
 
 from wall_position_slave import wall_position as m_w_p
+
+mode=GPIO.getmode()
+GPIO.setmode(GPIO.BCM)
 
 class Slave():
     """docstring for ."""
@@ -20,13 +25,19 @@ class Slave():
     Direction    = ''
     Angle_cam    = None
     Robot_cam    = None
+    
+    Trig_front   = 19
+    Echo_front   = 26
+    
+    Trig_right   = 21
+    Echo_right   = 20
 
-    def __init__(self, arg):
+    def __init__(self):
         Slave.Stop_history.extend( [ 'Slave', 'Slave' ] )
         Slave.Zero_history.extend( [ 0, 0 ] )
         Slave.Direction    = 'Forward'
-        os.system("sudo ln -s /dev/v4l/by-path/pci-0000\:00\:14.0-usb-0\:11* /dev/cam1 ")#symlink - modify that part
-        os.system("sudo ln -s /dev/v4l/by-path/pci-0000\:00\:14.0-usb-0\:12* /dev/cam2 ")#symlink - modify that part
+        os.system("sudo ln -s /dev/v4l/by-path/platform-3f980000.usb-usb-0:1.4:1.0-video* /dev/cam1 ")#symlink - modify that part right top hub
+        os.system("sudo ln -s /dev/v4l/by-path/platform-3f980000.usb-usb-0:1.5:1.0-video* /dev/cam2 ")#symlink - modify that part right down hub 
 
         Slave.Angle_cam    = cv2.VideoCapture("/dev/cam1")
         while True:
@@ -43,7 +54,70 @@ class Slave():
                 Slave.Robot_cam.set(cv2.CAP_PROP_FRAME_WIDTH,640)
                 Slave.Robot_cam.set(cv2.CAP_PROP_FRAME_HEIGHT,480)
                 break
-
+        
+        GPIO.setup(Slave.Trig_front,GPIO.OUT)
+        GPIO.setup(Slave.Echo_front,GPIO.IN)
+        
+        GPIO.setup(Slave.Trig_right,GPIO.OUT)
+        GPIO.setup(Slave.Echo_right,GPIO.IN)  
+    
+    """---------------- FRONT_WALL_DIST -----------------"""
+    
+    def front_wall_dist( self ):
+            
+    
+    """------------- FRONT_WALL_DIST - END --------------"""
+    
+    """---------------- SIDE_WALL_DIST -----------------"""
+    
+    def side_wall_dist( self ):
+            
+    
+    """------------- SIDE_WALL_DIST - END --------------"""
+    
+    """---------------- SERIAL -----------------"""
+    
+    def serial( self, speed_1, direction_1, speed_2, direction_2, time ):
+            
+    
+    """------------- SERIAL - END --------------"""
+    
+    """---------------- WAIT -----------------"""
+    
+    def wait( self, time_to_wait ):
+        self.serial()
+            
+    
+    """------------- WAIT - END --------------"""
+    
+    """---------------- OBSTACLE -----------------"""
+    
+    def obstacle( self, front_wall_dist ):
+            
+    
+    """------------- OBSTACLE - END --------------"""
+    
+    """---------------- TURN -----------------"""
+    
+    def turn( self, side_wall_dist ):
+            
+    
+    """------------- TURN - END --------------"""
+    
+    """---------------- BANG_BANG -----------------"""
+    
+    def bang_bang( self, side_wall_dist ):
+            
+    
+    """------------- BANG_BANG - END --------------"""
+    
+    """---------------- GO_STRAIGHT -----------------"""
+    
+    def go_straight( self ):
+            
+    
+    """------------- GO_STRAIGHT - END --------------"""
+    
     """---------------- STOP_HISTORY -----------------"""
 
     def history_check( self, arg ):
@@ -228,17 +302,17 @@ class Slave():
     		textY =  25
     		cv2.putText(img, text, (textX, textY ), font, 1, (219, 255, 77), 1)
 
+                Slave.Angle = value
 
-
-        #img = imutils.resize(img,width=640)
-    	#cv2.imshow("Find_angle", img)
+        img = imutils.resize(img,width=640)
+    	cv2.imshow("Find_angle", img)
 
 
     	try:
     	    value # does a exist in the current namespace
     	except NameError:
     	    Slave.Angle = -9999999
-    	Slave.Angle = value
+    	
 
     """----------------- ANGLE - END -----------------"""
 
@@ -322,7 +396,7 @@ class Slave():
     """-------------------- STOP ---------------------"""
 
     def sys_clear( self ):
-            Slave.Is_sys_stop  = False
+        Slave.Is_sys_stop  = False
 
     def is_stop( self ):
         ret, frame_1 = Slave.Angle_cam.read()
@@ -356,32 +430,43 @@ class Slave():
 if __name__ == "__main__":
     Robot = Slave()
     while True:
-        if obstacle():
-            Turn_90()
-            Wait() #10sn
-            Go_straight()
+        if Robot.obstacle():
+            Robot.turn()
+            Robot.wait() #10sn
+            Robot.go_straight()
             Robot.history_add_stop( 'Slave' )
         elif Robot.is_stop():
-            Wait() #10 sn tamamla
+            Robot.wait() #10 sn tamamla
             Robot.detect_direction()
             if Robot.Is_sys_stop:
                 Robot.history_add_stop( 'Sys' )
                 Robot.sys_clear()
             else:
                 Robot.history_add_stop( 'Master' )
-            Bang_bang()
-            Wait()
+            Robot.bang_bang()
+            Robot.wait()
             
-""" Eksikler
+def measure_distance(TRIG,ECHO):
+  x = []
+  for i in range (5):      
+      time.sleep(0.00001)
+      GPIO.output(TRIG, True)
+      time.sleep(0.00001)
+      GPIO.output(TRIG, False)
 
-1- detect_direction -> wait()
-2- is_stop          -> wait()
-3- __init__         -> usb yerleri
-4- obstacle
-5- Turn_90          -> ayrıca angle bilgisi gerekiyo 90 derece dönmek için
-6- wait fonksiyonları
-7- Bang_bang
-9- Go_straight()
-10- serial ile düzgün synch olmalı bu fonk lar
-11- ROI -> Region of Interest -> wall position
-"""
+      while GPIO.input(ECHO)==0:
+        pulse_start = time.time()
+
+      while GPIO.input(ECHO)==1:
+        pulse_end = time.time()
+
+      pulse_duration = pulse_end - pulse_start
+
+      distance = pulse_duration * 17150
+      distance = round(distance, 2)
+      x.append(distance)
+
+  
+  return distance 
+    
+    
