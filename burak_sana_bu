@@ -1,0 +1,33 @@
+import RPi.GPIO as GPIO
+
+from RPIO import PWM
+
+
+servo = PWM.servo()
+mode = GPIO.getmode()
+GPIO.setmode( GPIO.BCM )
+
+GPIO.setup(6 ,GPIO.OUT )
+GPIO.setup(5 ,GPIO.OUT )
+
+GPIO.output(6,True)
+GPIO.output(5,False)
+
+
+GPIO.setup(7 ,GPIO.OUT )
+GPIO.setup(8 ,GPIO.OUT )
+
+GPIO.output(7,False)
+GPIO.output(8,True)
+
+
+while True:
+    for i in range (100):
+        servo.set_servo(13 , 2000 )
+        servo.set_servo(12 , 2000 )
+    for i in range (100):
+        servo.set_servo(13 , 1000 )
+        servo.set_servo(12 , 1000 )
+    for i in range (100):
+        servo.set_servo(13 , 0 )
+        servo.set_servo(12 , 0 )
