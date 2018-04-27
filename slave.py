@@ -100,15 +100,19 @@ class Slave():
         """---------------- GPIO_ADJUSTMENT - END -----------------"""
 
         """---------------- PWM_ADJUSTMENT -----------------"""
-
-        Slave.PWM_0 = GPIO.PWM(13,100)
+	
+        
+	Slave.PWM_0 = GPIO.PWM(13,100)
         Slave.PWM_1 = GPIO.PWM(12,100)
+	
+	Slave.PWM_0.start( 0 )
+        Slave.PWM_1.start( 0 )
 
         """---------------- PWM_ADJUSTMENT - END -----------------"""
 
     """---------------- MEASURE_DISTANCE -----------------"""
 
-    def measure_distance( TRIG, ECHO ):
+    def measure_distance( self, TRIG, ECHO ):
         x = []
         for i in range ( 5 ):
             time.sleep( 0.00001 )
@@ -150,8 +154,7 @@ class Slave():
     """---------------- MOTOR -----------------"""
 
     def motor( self, speed_right, speed_left, dir_right, dir_left ):
-        Slave.PWM_0.start( 0 )
-        Slave.PWM_1.start( 0 )
+        
 
         dir_right_not = 1 - dir_right
         dir_left_not  = 1 - dir_left
@@ -422,7 +425,7 @@ class Slave():
     		cv2.putText( img, text, ( textX, textY ), font, 1, ( 219, 255, 77 ), 1 )
 
 
-            Slave.Angle = value
+            	Slave.Angle = value
 
         img = imutils.resize( img, width = 640 )
     	cv2.imshow( "Find_angle", img )
@@ -548,8 +551,15 @@ class Slave():
 if __name__ == "__main__":
     Robot = Slave()
     while(True):
-        front_dist = Robot.front_wall_dist
-        side_dist  = Robot.side_wall_dist
+	if Robot.obstacle():
+	    Robot.turn( 25,0.55)
+	    Robot.wait( 8 )
+	else:
+	    Robot.bang_bang(20,0)		
+
+"""
+        front_dist = Robot.front_wall_dist()
+        side_dist  = Robot.side_wall_dist()
 
         if front_dist <= 10 :
             if side_dist > 20 :
@@ -565,6 +575,7 @@ if __name__ == "__main__":
                 Robot.motor(20,40,1,1)
             else:
                 Robot.motor(30,30,1,1)
+"""
 """
         # Capture frame-by-frame
         ret, frame = Robot.Angle_cam.read()
