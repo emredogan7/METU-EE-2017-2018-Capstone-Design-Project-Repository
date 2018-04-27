@@ -1,6 +1,7 @@
 import os
 import cv2
-import time
+import
+
 import imutils
 import datetime,time
 
@@ -100,11 +101,11 @@ class Slave():
         """---------------- GPIO_ADJUSTMENT - END -----------------"""
 
         """---------------- PWM_ADJUSTMENT -----------------"""
-	
-        
+
+
 	Slave.PWM_0 = GPIO.PWM(13,100)
         Slave.PWM_1 = GPIO.PWM(12,100)
-	
+
 	Slave.PWM_0.start( 0 )
         Slave.PWM_1.start( 0 )
 
@@ -113,27 +114,23 @@ class Slave():
     """---------------- MEASURE_DISTANCE -----------------"""
 
     def measure_distance( self, TRIG, ECHO ):
-        x = []
-        for i in range ( 5 ):
-            time.sleep( 0.00001 )
-            GPIO.output( TRIG, True )
-            time.sleep( 0.00001)
-            GPIO.output( TRIG, False )
 
-            while GPIO.input( ECHO ) == 0:
-                pulse_start = time.time()
+        time.sleep( 0.1 )
+        GPIO.output( TRIG, True )
+        time.sleep( 0.00001)
+        GPIO.output( TRIG, False )
 
-            while GPIO.input( ECHO ) == 1:
-                pulse_end = time.time()
+        while GPIO.input( ECHO ) == 0:
+            pulse_start = time.time()
 
-            pulse_duration = pulse_end - pulse_start
+        while GPIO.input( ECHO ) == 1:
+            pulse_end = time.time()
 
-            distance = pulse_duration * 17150
-            distance = round( distance, 2 )
-            x.append( distance )
+        pulse_duration = pulse_end - pulse_start
 
-        x.sort()
-        return x[ 2 ]
+        distance = pulse_duration * 17150
+        distance = round( distance, 2 )
+        return distance
 
     """------------- MEASURE_DISTANCE - END --------------"""
 
@@ -154,7 +151,7 @@ class Slave():
     """---------------- MOTOR -----------------"""
 
     def motor( self, speed_right, speed_left, dir_right, dir_left ):
-        
+
 
         dir_right_not = 1 - dir_right
         dir_left_not  = 1 - dir_left
@@ -191,56 +188,40 @@ class Slave():
 
     """------------- OBSTACLE - END --------------"""
 
-    """---------------- TURN_RIGHT -----------------"""
-
-    def turn_right( self, speed, time ):
-        self.motor( speed, 1, speed, 0 )
-        time.sleep( time )
-
-
-    """------------- TURN_RIGHT - END --------------"""
-
-    """---------------- TURN_LEFT -----------------"""
-
-    def turn_left( self, speed, time ):
-        self.motor( speed, 0, speed, 1 )
-        time.sleep( time )
-
-    """------------- TURN_LEFT - END --------------"""
-
     """---------------- TURN -----------------"""
 
-    def turn( self, speed, time ):
+    def turn( self, speed,time_for_process):
         right_distance = self.side_wall_dist()
         if right_distance < 25:
-            self.turn_left( speed, time )
+            self.motor( speed, 0, speed, 1 )
         else:
-            self.turn_right( speed, time )
+            self.motor( speed, 1, speed, 0 )
+        time.sleep(time_for_process)
 
     """------------- TURN - END --------------"""
 
     """---------------- BANG_BANG -----------------"""
 
-    def bang_bang( self, speed, time ):
+    def bang_bang( self, speed,time_for_process):
         right_distance = self.side_wall_dist()
         if right_distance <= 11:
             self.motor( speed + 10, 1, speed - 10, 1 )
-            time.sleep( time )
+            time.sleep(time_for_process)
         elif right_distance >= 13:
             self.motor( speed - 10, 1, speed + 10, 1 )
-            time.sleep( time )
+            time.sleep(time_for_process)
         else:
             self.motor( speed,      1, speed,      1 )
-            time.sleep( time )
+            time.sleep(time_for_process)
 
 
     """------------- BANG_BANG - END --------------"""
 
     """---------------- GO_STRAIGHT -----------------"""
 
-    def go_straight( self, speed, time ):
+    def go_straight( self, speed,time_for_process):
         self.motor( speed, 1, speed, 1 )
-        time.sleep( time )
+        time.sleep(time_for_process)
     """------------- GO_STRAIGHT - END --------------"""
 
     """---------------- STOP_HISTORY -----------------"""
@@ -273,7 +254,7 @@ class Slave():
         self.angle( frame_1 )
         Angle_1 = Slave.Angle
 
-        Slave.wait( time ) #az bekle
+        Slave.wait(time_for_process) #az bekle
 
         ret, frame_2 = Slave.Angle_cam.read()
         self.angle( frame_2 )
@@ -524,7 +505,7 @@ class Slave():
         self.angle( frame_1 )
         Angle_1 = Slave.Angle
 
-        Slave.wait( time ) #az bekle
+        Slave.wait(time_for_process) #az bekle
 
         ret, frame_2 = Slave.Angle_cam.read()
         self.angle( frame_2 )
@@ -555,7 +536,7 @@ if __name__ == "__main__":
 	    Robot.turn( 25,0.55)
 	    Robot.wait( 8 )
 	else:
-	    Robot.bang_bang(20,0)		
+	    Robot.bang_bang(20,0)
 
 """
         front_dist = Robot.front_wall_dist()
@@ -593,13 +574,13 @@ if __name__ == "__main__":
     Robot = Slave()
     while True:
         if Robot.obstacle():
-            Robot.turn( speed, time )
-            Robot.wait( time ) #10sn
-            #Robot.go_straight( speed, time )
+            Robot.turn( speed,time_for_process)
+            Robot.wait(time_for_process) #10sn
+            #Robot.go_straight( speed,time_for_process)
             Robot.history_add_stop( 'Slave' )
 
         elif Robot.is_stop():
-            Robot.wait( time ) #10 sn tamamla
+            Robot.wait(time_for_process) #10 sn tamamla
             Robot.detect_direction()
             if Robot.Is_sys_stop:
                 Robot.history_add_stop( 'Sys' )
@@ -607,7 +588,7 @@ if __name__ == "__main__":
 
             else:
                 Robot.history_add_stop( 'Master' )
-            Robot.bang_bang( speed, time )
+            Robot.bang_bang( speed,time_for_process)
 
 
 adjust the followings
