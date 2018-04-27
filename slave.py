@@ -40,6 +40,9 @@ class Slave():
     Trig_right   = 21
     Echo_right   = 20
 
+    PWM_0        = None
+    PWM_1        = None
+
 
 
     def __init__( self ):
@@ -83,7 +86,25 @@ class Slave():
         GPIO.setup( Slave.Trig_right, GPIO.OUT )
         GPIO.setup( Slave.Echo_right, GPIO.IN  )
 
+
+
+        GPIO.setup(6 ,GPIO.OUT )
+        GPIO.setup(5 ,GPIO.OUT )
+
+        GPIO.setup(7 ,GPIO.OUT )
+        GPIO.setup(8 ,GPIO.OUT )
+
+        GPIO.setup(13,GPIO.OUT)
+        GPIO.setup(12,GPIO.OUT)
+
         """---------------- GPIO_ADJUSTMENT - END -----------------"""
+
+        """---------------- PWM_ADJUSTMENT -----------------"""
+
+        Slave.PWM_0 = GPIO.PWM(13,100)
+        Slave.PWM_1 = GPIO.PWM(12,100)
+
+        """---------------- PWM_ADJUSTMENT - END -----------------"""
 
     """---------------- MEASURE_DISTANCE -----------------"""
 
@@ -126,21 +147,32 @@ class Slave():
 
     """------------- SIDE_WALL_DIST - END --------------"""
 
-    """---------------- SERIAL -----------------"""
+    """---------------- MOTOR -----------------"""
 
-    def serial( self, speed_1, direction_1, speed_2, direction_2, time ):
-        char_send_info = 'speed_1' + 'direction_1' + 'speed_2' + 'direction_2'
-        int_send_info  = int ( char_send_info )
-        Slave.ser.write( str( int_send_info ).encode() )
-        time.sleep( time )
+    def motor( self, speed_right, speed_left, dir_right, dir_left ):
+        Slave.PWM_0.start( 0 )
+        Slave.PWM_1.start( 0 )
+
+        dir_right_not = 1 - dir_right
+        dir_left_not  = 1 - dir_left
+
+        GPIO.output( 6, dir_right )
+        GPIO.output( 5, dir_right_not )
+
+        GPIO.output( 7, dir_left_not )
+        GPIO.output( 8, dir_left )
+
+        Slave.PWM_0.ChangeDutyCycle(speed_right)
+        Slave.PWM_1.ChangeDutyCycle(speed_left)
 
 
-    """------------- SERIAL - END --------------"""
+    """------------- MOTOR - END --------------"""
 
     """---------------- WAIT -----------------"""
 
     def wait( self, time_to_wait ):
-        self.serial( 0, 0, 0, 0, time_to_wait )
+        self.motor( 0, 0, 0, 0 )
+        time.sleep( time_to_wait )
 
 
     """------------- WAIT - END --------------"""
@@ -159,15 +191,16 @@ class Slave():
     """---------------- TURN_RIGHT -----------------"""
 
     def turn_right( self, speed, time ):
-        self.serial( speed, 1, speed, 0, time )
+        self.motor( speed, 1, speed, 0 )
+        time.sleep( time )
 
     """------------- TURN_RIGHT - END --------------"""
 
     """---------------- TURN_LEFT -----------------"""
 
     def turn_left( self, speed, time ):
-        self.serial( speed, 0, speed, 1, time )
-
+        self.motor( speed, 0, speed, 1 )
+        time.sleep( time )
 
     """------------- TURN_LEFT - END --------------"""
 
@@ -187,11 +220,14 @@ class Slave():
     def bang_bang( self, speed, time ):
         right_distance = self.side_wall_dist()
         if right_distance <= 11:
-            self.serial( speed + 1, 1, speed - 1, 1, time )
+            self.motor( speed + 10, 1, speed - 10, 1 )
+            time.sleep( time )
         elif right_distance >= 13:
-            self.serial( speed - 1, 1, speed + 1, 1, time )
+            self.motor( speed - 10, 1, speed + 10, 1 )
+            time.sleep( time )
         else:
-            self.serial( speed    , 1, speed    , 1, time )
+            self.motor( speed,      1, speed,      1 )
+            time.sleep( time )
 
 
     """------------- BANG_BANG - END --------------"""
@@ -199,8 +235,8 @@ class Slave():
     """---------------- GO_STRAIGHT -----------------"""
 
     def go_straight( self, speed, time ):
-        self.serial( speed, 1, speed, 1, time )
-
+        self.motor( speed, 1, speed, 1 )
+        time.sleep( time )
     """------------- GO_STRAIGHT - END --------------"""
 
     """---------------- STOP_HISTORY -----------------"""
@@ -384,6 +420,7 @@ class Slave():
     		textY    =  25
     		cv2.putText( img, text, ( textX, textY ), font, 1, ( 219, 255, 77 ), 1 )
 
+
             Slave.Angle = value
 
         img = imutils.resize( img, width = 640 )
@@ -510,6 +547,13 @@ class Slave():
 if __name__ == "__main__":
     Robot = Slave()
     while(True):
+        Robot.motor(50,50,1,1)
+        time.sleep(1)
+        Robot.motor(0,50,1,1)
+        time.sleep(1)
+        Robot.motor(50,0,1,1)
+        time.sleep(1)
+"""
         # Capture frame-by-frame
         ret, frame = Robot.Angle_cam.read()
         ret, frames = Robot.Robot_cam.read()
@@ -522,12 +566,13 @@ if __name__ == "__main__":
     cap.release()
     cv2.destroyAllWindows()
 """
+"""
     Robot = Slave()
     while True:
         if Robot.obstacle():
             Robot.turn( speed, time )
             Robot.wait( time ) #10sn
-            Robot.go_straight( speed, time )
+            #Robot.go_straight( speed, time )
             Robot.history_add_stop( 'Slave' )
 
         elif Robot.is_stop():
@@ -540,7 +585,7 @@ if __name__ == "__main__":
             else:
                 Robot.history_add_stop( 'Master' )
             Robot.bang_bang( speed, time )
-            Robot.wait( time )
+
 
 adjust the followings
 1- speed
