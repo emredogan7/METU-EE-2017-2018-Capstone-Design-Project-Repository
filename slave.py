@@ -194,6 +194,7 @@ class Slave():
         self.motor( speed, 1, speed, 0 )
         time.sleep( time )
 
+
     """------------- TURN_RIGHT - END --------------"""
 
     """---------------- TURN_LEFT -----------------"""
@@ -547,12 +548,23 @@ class Slave():
 if __name__ == "__main__":
     Robot = Slave()
     while(True):
-        Robot.motor(50,50,1,1)
-        time.sleep(1)
-        Robot.motor(0,50,1,1)
-        time.sleep(1)
-        Robot.motor(50,0,1,1)
-        time.sleep(1)
+        front_dist = Robot.front_wall_dist
+        side_dist  = Robot.side_wall_dist
+
+        if front_dist <= 10 :
+            if side_dist > 20 :
+                Robot.motor(25,25,0,1)
+            else:
+                Robot.motor(25,25,1,0)
+            time.sleep(0.75)
+
+        else:
+            if side_dist <= 11 :
+                Robot.motor(40,20,1,1)
+            elif side_dist >= 13 :
+                Robot.motor(20,40,1,1)
+            else:
+                Robot.motor(30,30,1,1)
 """
         # Capture frame-by-frame
         ret, frame = Robot.Angle_cam.read()
