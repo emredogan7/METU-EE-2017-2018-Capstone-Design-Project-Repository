@@ -8,6 +8,8 @@ Trig_front = 19
 Echo_front = 26
 Trig_right = 21
 Echo_right = 20
+#Trig_left = 9
+#Echo_left = 11
 #first integers       = speed
 #second integers = direction (1 for forward, 0 for backward)
 
