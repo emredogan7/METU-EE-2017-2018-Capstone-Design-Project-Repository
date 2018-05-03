@@ -53,15 +53,12 @@ while ( 1 ) :
 				motor_adj((8+dist_difference), 8, 1, 1)
 		"""	
 		if right_dist <= 11:
-            motor_adj(40,20,1,1)
-            print ("C")
-        elif right_dist >= 13:
-            motor_adj(20,40,1,1)
-            print ("D")
-        else :
-            motor_adj(30,30,1,1)
-            print ("E")
-        """ 
-    
-    
-    
+		    motor_adj(40,20,1,1)
+		    print ("C")
+		elif right_dist >= 13:
+		    motor_adj(20,40,1,1)
+		    print ("D")
+		else :
+		    motor_adj(30,30,1,1)
+		    print ("E")
+		"""
