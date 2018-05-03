@@ -1,4 +1,16 @@
-gers       = speed
+from sensor import set_distance_hw
+from sensor import measure_distance
+from motor  import motor_adj
+import time
+
+
+Trig_front = 19
+Echo_front = 26
+Trig_right = 21
+Echo_right = 20
+Trig_left = 9
+Echo_left = 11
+#first integers       = speed
 #second integers = direction (1 forward, 0 backward)
 
 set_distance_hw(Trig_front,Echo_front)
@@ -49,4 +61,7 @@ while ( 1 ) :
         else :
             motor_adj(30,30,1,1)
             print ("E")
-        """
+        """ 
+    
+    
+    
