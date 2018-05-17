@@ -1,3 +1,24 @@
+From the website:
+	Company name & shareholders
+	
+	Project description
+	
+	Technical specifications (customer and engineering requirements, method of solution, 	energy budget, performance measures, test results)
+
+	Extra features (if any)
+
+	Features that differentiates your product from others (concerning technical or 	financial aspects and in terms of any other points)
+
+	Budget
+	
+	Deliverables
+
+	Choose the color and/or pattern of the background and the color (in contrast with 	the background) and size of the fonts such that your poster is easily readable from 	a distance of at least 2 meters.
+
+
 Cost Analysis
 What does the box includes?
 Photo of the product and deliverables
+solutions
+deliverables
+requirements
