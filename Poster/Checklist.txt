@@ -1,7 +1,7 @@
 From the website:
-	Company name & shareholders
+	Company name & shareholders: DONE
 	
-	Project description
+	Project description: DONE
 	
 	Technical specifications (customer and engineering requirements, method of solution, 	energy budget, performance measures, test results)
 
@@ -13,12 +13,10 @@ From the website:
 	
 	Deliverables
 
-	Choose the color and/or pattern of the background and the color (in contrast with 	the background) and size of the fonts such that your poster is easily readable from 	a distance of at least 2 meters.
+	
 
-
-Cost Analysis
 What does the box includes?
 Photo of the product and deliverables
-solutions
+
 deliverables
-requirements
+requirements?
